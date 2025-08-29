@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeachCheck España - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #000;
+        }
+        
+        .phone-container {
+            max-width: 375px;
+            margin: 20px auto;
+            background: #000;
+            border-radius: 20px;
+            padding: 20px 5px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        
+        .screen {
+            background: #f5f5f5;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 667px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #0ea5e9;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        
+        .beach-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 2px solid #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .beach-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .condition-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .condition-icon {
+            font-size: 20px;
+            width: 30px;
+        }
+        
+        .condition-text {
+            font-size: 16px;
+            flex: 1;
+        }
+        
+        .timestamp {
+            font-size: 14px;
+            color: #666;
+            margin-top: 12px;
+            font-style: italic;
+        }
+        
+        .report-screen {
+            display: none;
+        }
+        
+        .report-screen.active {
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .options-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .option-button {
+            flex: 1;
+            padding: 12px 16px;
+            background: #e5e5e5;
+            border-radius: 8px;
+            border: 2px solid #000;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .option-button.selected {
+            background: #0ea5e9;
+            color: white;
+        }
+        
+        .submit-button {
+            background: #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 2px solid #000;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .detail-screen {
+            display: none;
+        }
+        
+        .detail-screen.active {
+            display: block;
+        }
+        
+        .image-placeholder {
+            height: 200px;
+            background: #e5e5e5;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #000;
+            font-size: 40px;
+            color: #999;
+        }
+        
+        .report-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 2px solid #000;
+        }
+        
+        .back-button {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Beach List Screen -->
+            <div id="beach-list" class="screen-content">
+                <div class="header">
+                    <div class="nav-buttons">
+                        <span></span>
+                        <span>BeachCheck España</span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="beach-card" onclick="showDetail('postiguet')">
+                        <div class="beach-name">Playa Postiguet</div>
+                        <div class="condition-row">
+                            <div class="condition-icon">✅</div>
+                            <div class="condition-text">Clean</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-icon">🌊</div>
+                            <div class="condition-text">Small waves</div>
+                        </div>
+                        <div class="timestamp">15 min ago</div>
+                    </div>
+                    
+                    <div class="beach-card" onclick="showDetail('sanjuan')">
+                        <div class="beach-name">Playa San Juan</div>
+                        <div class="condition-row">
+                            <div class="condition-icon">⚠️</div>
+                            <div class="condition-text">Muddy water</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-icon">💨</div>
+                            <div class="condition-text">Strong wind</div>
+                        </div>
+                        <div class="timestamp">5 min ago</div>
+                    </div>
+                    
+                    <div class="beach-card" onclick="showDetail('arenales')">
+                        <div class="beach-name">Arenales del Sol</div>
+                        <div class="condition-row">
+                            <div class="condition-icon">✅</div>
+                            <div class="condition-text">Clean</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-icon">👥</div>
+                            <div class="condition-text">Crowded</div>
+                        </div>
+                        <div class="timestamp">30 min ago</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Beach Detail Screen -->
+            <div id="beach-detail" class="detail-screen">
+                <div class="header">
+                    <div class="nav-buttons">
+                        <button class="back-button" onclick="showList()">← Back</button>
+                        <span id="detail-title">Playa Postiguet</span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="image-placeholder">✕</div>
+                    
+                    <div class="report-section">
+                        <div class="section-title">Latest report (15 min ago)</div>
+                        <div class="condition-row">
+                            <div class="condition-icon">🌊</div>
+                            <div class="condition-text">Small waves</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-icon">💧</div>
+                            <div class="condition-text">Clean</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-icon">🍃</div>
+                            <div class="condition-text">Weak</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-icon">👥</div>
+                            <div class="condition-text">Crowded</div>
+                        </div>
+                    </div>
+                    
+                    <div class="submit-button" onclick="showReport()">Make a report</div>
+                </div>
+            </div>
+            
+            <!-- Report Screen -->
+            <div id="report-screen" class="report-screen">
+                <div class="header">
+                    <div class="nav-buttons">
+                        <button class="back-button" onclick="showDetail()">← Back</button>
+                        <span>Make a report</span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="section">
+                        <div class="section-title">Waves:</div>
+                        <div class="options-row">
+                            <div class="option-button" onclick="selectOption(this, 'waves')">None</div>
+                            <div class="option-button" onclick="selectOption(this, 'waves')">Small</div>
+                            <div class="option-button" onclick="selectOption(this, 'waves')">Big</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Water:</div>
+                        <div class="options-row">
+                            <div class="option-button" onclick="selectOption(this, 'water')">Clean</div>
+                            <div class="option-button" onclick="selectOption(this, 'water')">Muddy</div>
+                            <div class="option-button" onclick="selectOption(this, 'water')">Dirty</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Wind:</div>
+                        <div class="options-row">
+                            <div class="option-button" onclick="selectOption(this, 'wind')">Weak</div>
+                            <div class="option-button" onclick="selectOption(this, 'wind')">Moderate</div>
+                            <div class="option-button" onclick="selectOption(this, 'wind')">Strong</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">People:</div>
+                        <div class="options-row">
+                            <div class="option-button" onclick="selectOption(this, 'people')">Few</div>
+                            <div class="option-button" onclick="selectOption(this, 'people')">Normal</div>
+                            <div class="option-button" onclick="selectOption(this, 'people')">Many</div>
+                        </div>
+                    </div>
+                    
+                    <div class="submit-button" onclick="submitReport()">Send</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showDetail(beachId) {
+            document.getElementById('beach-list').style.display = 'none';
+            document.getElementById('beach-detail').classList.add('active');
+            document.getElementById('report-screen').classList.remove('active');
+        }
+        
+        function showList() {
+            document.getElementById('beach-list').style.display = 'block';
+            document.getElementById('beach-detail').classList.remove('active');
+            document.getElementById('report-screen').classList.remove('active');
+        }
+        
+        function showReport() {
+            document.getElementById('beach-detail').classList.remove('active');
+            document.getElementById('report-screen').classList.add('active');
+        }
+        
+        function selectOption(element, category) {
+            // Remove selected class from siblings
+            const siblings = element.parentNode.children;
+            for (let sibling of siblings) {
+                sibling.classList.remove('selected');
+            }
+            // Add selected class to clicked element
+            element.classList.add('selected');
+        }
+        
+        function submitReport() {
+            alert('¡Informe enviado! Gracias por reportar las condiciones de la playa.');
+            showDetail();
+        }
+    </script>
+</body>
+</html>
+
