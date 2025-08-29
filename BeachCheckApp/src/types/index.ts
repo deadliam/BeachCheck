@@ -20,6 +20,7 @@ export interface Beach {
   latitude: number;
   longitude: number;
   imageUrl?: string;
+  uploadedImage?: string;
   latestReport?: BeachReport;
   recentReports: BeachReport[];
 }

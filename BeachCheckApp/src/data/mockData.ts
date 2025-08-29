@@ -35,12 +35,13 @@ export const mockReports: BeachReport[] = [
 ];
 
 // Mock beaches
-export const mockBeaches: Beach[] = [
+export let mockBeaches: Beach[] = [
   {
     id: 'playa_postiguet',
     name: 'Playa Postiguet',
     latitude: 38.3436,
     longitude: -0.4814,
+    uploadedImage: undefined,
     latestReport: mockReports[0],
     recentReports: [mockReports[0]]
   },
@@ -49,6 +50,7 @@ export const mockBeaches: Beach[] = [
     name: 'Playa San Juan',
     latitude: 38.3820,
     longitude: -0.4367,
+    uploadedImage: undefined,
     latestReport: mockReports[1],
     recentReports: [mockReports[1]]
   },
@@ -57,6 +59,7 @@ export const mockBeaches: Beach[] = [
     name: 'Arenales del Sol',
     latitude: 38.2736,
     longitude: -0.5614,
+    uploadedImage: undefined,
     latestReport: mockReports[2],
     recentReports: [mockReports[2]]
   }
@@ -102,4 +105,20 @@ export const getConditionIcon = (condition: string, value: string): string => {
   };
   
   return icons[condition as keyof typeof icons]?.[value as keyof typeof icons.waves] || '❓';
+};
+
+// Function to update beach photo
+export const updateBeachPhoto = (beachId: string, imageUri: string): void => {
+  const beachIndex = mockBeaches.findIndex(beach => beach.id === beachId);
+  if (beachIndex !== -1) {
+    mockBeaches[beachIndex] = {
+      ...mockBeaches[beachIndex],
+      uploadedImage: imageUri
+    };
+  }
+};
+
+// Function to get beach by ID
+export const getBeachById = (beachId: string): Beach | undefined => {
+  return mockBeaches.find(beach => beach.id === beachId);
 };

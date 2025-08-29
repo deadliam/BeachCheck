@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import { RouteProp } from '@react-navigation/native';
 import { launchImageLibrary, ImagePickerResponse, MediaType } from 'react-native-image-picker';
 
 import { RootStackParamList } from '../types';
-import { getTimeAgo, getConditionIcon } from '../data/mockData';
+import { getTimeAgo, getConditionIcon, updateBeachPhoto } from '../data/mockData';
 
 type BeachDetailScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -31,7 +31,6 @@ interface Props {
 const BeachDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { beach } = route.params;
   const latestReport = beach.latestReport;
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const selectImage = () => {
     const options = {
@@ -47,7 +46,12 @@ const BeachDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       if (response.assets && response.assets[0]) {
-        setSelectedImage(response.assets[0].uri || null);
+        const imageUri = response.assets[0].uri;
+        if (imageUri) {
+          updateBeachPhoto(beach.id, imageUri);
+          // Trigger re-render by navigating back and forth
+          navigation.setParams({ beach: { ...beach, uploadedImage: imageUri } });
+        }
       }
     });
   };
@@ -57,9 +61,9 @@ const BeachDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Beach Image Area */}
         <TouchableOpacity style={styles.imageContainer} onPress={selectImage}>
-          {selectedImage ? (
+          {beach.uploadedImage ? (
             <>
-              <Image source={{ uri: selectedImage }} style={styles.beachImage} />
+              <Image source={{ uri: beach.uploadedImage }} style={styles.beachImage} />
               <View style={styles.photoIcon}>
                 <Text style={styles.photoIconText}>📷</Text>
               </View>

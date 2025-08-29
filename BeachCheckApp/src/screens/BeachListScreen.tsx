@@ -10,7 +10,7 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Beach } from '../types';
-import { mockBeaches, getTimeAgo, getConditionIcon } from '../data/mockData';
+import { mockBeaches, getTimeAgo, getConditionIcon, getBeachById } from '../data/mockData';
 
 type BeachListScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -28,7 +28,10 @@ const BeachListScreen: React.FC<Props> = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.beachCard}
-        onPress={() => navigation.navigate('BeachDetail', { beach })}
+        onPress={() => {
+          const updatedBeach = getBeachById(beach.id) || beach;
+          navigation.navigate('BeachDetail', { beach: updatedBeach });
+        }}
       >
         <View style={styles.beachHeader}>
           <Text style={styles.beachName}>{beach.name}</Text>
