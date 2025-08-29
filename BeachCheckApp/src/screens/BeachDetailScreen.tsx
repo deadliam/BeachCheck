@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,12 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  Image,
+  Alert,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import { launchImageLibrary, ImagePickerResponse, MediaType } from 'react-native-image-picker';
 
 import { RootStackParamList } from '../types';
 import { getTimeAgo, getConditionIcon } from '../data/mockData';
@@ -28,17 +31,46 @@ interface Props {
 const BeachDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { beach } = route.params;
   const latestReport = beach.latestReport;
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const selectImage = () => {
+    const options = {
+      mediaType: 'photo' as MediaType,
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchImageLibrary(options, (response: ImagePickerResponse) => {
+      if (response.didCancel || response.errorMessage) {
+        return;
+      }
+
+      if (response.assets && response.assets[0]) {
+        setSelectedImage(response.assets[0].uri || null);
+      }
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Beach Image Placeholder */}
-        <View style={styles.imagePlaceholder}>
-          <View style={styles.placeholderContainer}>
-            <Text style={styles.imageXText}>🏖️</Text>
-            <Text style={styles.addPhotoText}>{beach.name}</Text>
-          </View>
-        </View>
+        {/* Beach Image Area */}
+        <TouchableOpacity style={styles.imageContainer} onPress={selectImage}>
+          {selectedImage ? (
+            <>
+              <Image source={{ uri: selectedImage }} style={styles.beachImage} />
+              <View style={styles.photoIcon}>
+                <Text style={styles.photoIconText}>📷</Text>
+              </View>
+            </>
+          ) : (
+            <View style={styles.placeholderContainer}>
+              <Text style={styles.imageXText}>✕</Text>
+              <Text style={styles.addPhotoText}>Tap to add photo</Text>
+            </View>
+          )}
+        </TouchableOpacity>
 
         {/* Latest Report Section */}
         <View style={styles.reportSection}>
@@ -113,7 +145,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
-  imagePlaceholder: {
+  imageContainer: {
     height: 200,
     backgroundColor: '#e5e5e5',
     borderRadius: 16,
@@ -122,16 +154,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#000',
+    overflow: 'hidden',
+    position: 'relative',
   },
-  imageX: {
+  beachImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  photoIcon: {
     position: 'absolute',
-    top: 20,
-    left: 20,
-    bottom: 20,
-    right: 20,
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 16,
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  photoIconText: {
+    fontSize: 16,
+    color: '#fff',
+  },
+
   placeholderContainer: {
     flex: 1,
     justifyContent: 'center',
